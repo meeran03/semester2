@@ -3,15 +3,12 @@
 using namespace std;
 
 
-void updateWord(char **&dic,int &size,int word) {
-    size++;
-    char* longPtr = new char[size];
+void updateWord(char **&dic,int &words,int size,char temp[]) {
+    char* longPtr = new char[size+1];
     for (int i=0;i<size;i++) {
-        *(longPtr+i) = *(*(dic+word)+i);
+        *(longPtr+i) = temp[i];
     }
-    delete [] (*(dic+word));
-    *(dic+word) = longPtr;
-    cout << *(dic+word) << endl;
+    *(dic+words-1) = longPtr;
 }
 
 void updateDic(char **&ptr,int &words) {
@@ -36,31 +33,41 @@ void updateDic(char **&ptr,int &words) {
 //     return ptr;
 // }
 
-void createDic(char* filename) {
-    int words=1;
-    char** dic = new char*[1];
-    fstream fin(filename,ios::in);
+bool checkWord(char word[], int &size) {
     int i=0;
+    bool isElig = true;
+    while (word[i] !='\0') {
+        if (word[i] < 65 || (word[i] <97 && word[i] > 90) || word[i] > 122) {
+            isElig = false;
+            break;
+        }
+        i++;
+    }
+    size = i;
+    if (size < 3) {
+        isElig = false;
+    }
+    return isElig;
+
+}
+
+char** createDic(char* filename) {
+    int words=1;
     int size=0;
-    *(dic+0) = nullptr;
-   // if (fin.is_open()) {
+    char** dic = new char*[words];
+    fstream fin(filename,ios::in);
+    if (fin.is_open()) {
         while (!fin.eof()) {
-            char temp;
-            fin.get(temp);
-            if (temp != '\n' && temp !=' ') {
-                //updateWord(dic,size,i);
-                cout << temp;
-            }
-            else {
+            char temp[100];
+            fin >> temp;
+            if (checkWord(temp,size)) {
+                updateWord(dic,words,size,temp);
                 updateDic(dic,words);
-                i++;
-                size=0;
             }
         }
-        cout << endl;
-        cout << words << endl;
-        cout << dic << endl;
-   // }
+        return dic;
+
+    }
 }
 
 
@@ -68,7 +75,10 @@ int main() {
     char* filename = new char[100];
     cout << "Enter the filname : ";
     cin >> filename;
-    createDic(filename);
+    char** dic = createDic(filename);
+    for (int i=0;*(dic+i);i++) {
+        cout << *(dic + i) << endl;
+    }
     return 0;
 }
 
