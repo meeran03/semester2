@@ -14,24 +14,12 @@ void updateWord(char **&dic,int &words,int size,char temp[]) {
 void updateDic(char **&ptr,int &words) {
     words++;
     char** longPtr = new char*[words];
-    for (int i=0;i<words;i++) {
+    for (int i=0;i<words-1;i++) {
         *(longPtr+i) = ptr[i];
     }
     delete [] ptr;
     ptr = longPtr;
 }
-
-// char *input(int &size) {
-//     char * ptr = new char[size];
-//     char temp;
-//     cin.get(temp);
-//     while (temp != '\n') {
-//         ptr[size] = temp;
-//         update(ptr,size);
-//         cin.get(temp);
-//     }
-//     return ptr;
-// }
 
 bool checkWord(char word[], int &size) {
     int i=0;
@@ -70,12 +58,45 @@ char** createDic(char* filename) {
     }
 }
 
+bool checkPresent(char ** arr,int arrSize,char ** dic,int word) {
+    bool found = false;
+    int i=0;
+    while (i<arrSize-1) {
+        if (*(dic+word) == *(arr+i)) {
+            found = true;
+            break;
+        }
+        i++;
+    }
+    return found;
+}
+
+void removeRepititions(char **& dic) {
+    int size=1;
+    int i=0;
+    char** replica= new char*[size];
+    while (*(dic+i)) {
+        if (!checkPresent(replica,size,dic,i)) {
+            replica[size-1] = dic[i];
+            updateDic(replica,size);
+        }
+        i++;
+    }
+    delete [] dic;
+    dic = replica;
+}
+
 
 int main() {
     char* filename = new char[100];
     cout << "Enter the filname : ";
     cin >> filename;
     char** dic = createDic(filename);
+    for (int i=0;*(dic+i);i++) {
+        cout << *(dic + i) << endl;
+    }
+    cout << "\nAfter Removing : \n\n";
+    removeRepititions(dic);
     for (int i=0;*(dic+i);i++) {
         cout << *(dic + i) << endl;
     }

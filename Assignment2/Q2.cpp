@@ -65,6 +65,9 @@ int main() {
         if (!(arr[i][n] !=-1 && arr[i][n+1] !=-1)) {
             i++;
         }
+        else {
+            break;
+        }
     }
     return 0;
 }
