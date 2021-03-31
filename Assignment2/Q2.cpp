@@ -4,7 +4,7 @@ using namespace std;
 
 void update(int **arr,int row,int &size) {
     size = size+1;
-    int *ptr = new int[size*2];
+    int *ptr = new int[size];
     for (int i=0;i<size-1;i++) {
         *(ptr+i) = arr[row][i];
     }
@@ -30,7 +30,7 @@ int** get2D(char* filename) {
     fstream fin(filename,ios::in);
     if (fin.is_open()) {
         int temp;
-        while (!fin.eof()) {
+        while (1) {
             fin >> temp;
             update(arr,size-1,i);
             if (temp !=-1) {
@@ -39,7 +39,18 @@ int** get2D(char* filename) {
             else {
                 arr[size-1][i-1]= temp;
                 i=0;
-                extend(arr,size);
+                
+                extend(arr,size);  
+                fin >> temp;
+                if (temp !=-1) {
+                    update(arr,size-1,i);
+                    arr[size-1][i-1]= temp;
+                }
+                else {
+                    extend(arr,size);
+                    arr[size-1] = nullptr;
+                    break;
+                }
             }
         }
 
@@ -52,21 +63,19 @@ int main() {
     cout << "Enter the filname : ";
     cin >> filename;
     int** arr = get2D(filename);
-    int i=0;
-    int n=0;
-    while (arr[i][n] !=-1 && arr[i][n+1] !=-1) {
+    int n=0,i=0;
+    while (1) {
         n=0;
-        while (arr[i][n] !=-1) {
-            cout << arr[i][n] << "\t";
+        while (*(*arr +n) != -1) {
+            cout << *(*arr + n) << "\t";
             n++;
         }
-        cout << arr[i][n];
-        cout << endl;
-        if (!(arr[i][n] !=-1 && arr[i][n+1] !=-1)) {
-            i++;
+        cout  << *(*arr + n) << endl;
+        if (*(arr+1) == 0) {
+            break;
         }
         else {
-            break;
+            arr++;
         }
     }
     return 0;
