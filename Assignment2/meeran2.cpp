@@ -35,7 +35,7 @@ void reducearraycolwise(int** &dp, int row, int rowno,int index) {
 	while ( *(*(dp+rowno) + (size) )) {
 		size++;
 	}
-
+	cout << "I am executed \n";
 	int * rowPtr = new int[size];
 	int newrowindex=0;
 	for (int r = 0; r <=size; r++)
@@ -91,32 +91,28 @@ int main()
 		}
 	}read.close();
 	// Checking output here modify it according to the ques
-	for (int i=0;i<4;i++) {
+	for (int i=0;i<row-1;i++) {
 		int j=0;
 		for (;dp[i][j] !=-1;j++) {
 			cout << dp[i][j] << "\t";
 		}
 		cout << dp[i][j] << "\n";
 	}
-	int tempnumber = 0;
-	for (int rowno = 0; rowno < row; rowno++){
-		for (int colno = 0; dp[rowno][colno] != -1; colno++) {
 
-			for (int checkingno = 0; dp[rowno][checkingno] != -1; checkingno++){
-
-				if (dp[rowno][colno] == dp[rowno][checkingno]) {
-					cout << "I am executed\n";
-					reducearraycolwise(dp, row, rowno, checkingno);
-						for (int i=0;i<4;i++) {
-							int j=0;
-							for (;dp[i][j] !=-1;j++) {
-								cout << dp[i][j] << "\t";
-							}
-							cout << dp[i][j] << "\n";
-						}
-				}
+	for (int i = 0; i < row-1; i++){
+		for (int j = 0; dp[i][j+1] != -1; j++) {
+			if (dp[i][j] == dp[i][j+1]) {
+				reducearraycolwise(dp, row, i, j+1);
 			}
 		}
 	}
 
+	for (int i=0;i<row-1;i++) {
+		int j=0;
+		for (;dp[i][j] !=-1;j++) {
+			cout << dp[i][j] << "\t";
+		}
+		cout << dp[i][j] << "\n";
+	}
 }
+

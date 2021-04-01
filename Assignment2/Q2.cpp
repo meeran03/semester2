@@ -5,8 +5,9 @@ using namespace std;
 void update(int **arr,int row,int &size) {
     size = size+1;
     int *ptr = new int[size];
-    for (int i=0;i<size-1;i++) {
-        *(ptr+i) = arr[row][i];
+    int * endptr = arr[row] +size;
+    for (int i=0,*p=ptr;i<size-1;i++,p++) {
+        *p = arr[row][i];
     }
     delete [] arr[row];
     arr[row] = nullptr;
@@ -15,8 +16,9 @@ void update(int **arr,int row,int &size) {
 
 void extend(int**& dp, int& rows) {
 	int** dpNew = new int* [rows + 1];
-	for (int i = 0; i < rows; i++)
-		dpNew[i] = dp[i];
+    int** endptr = dpNew + rows;
+	for (int i = 0, **p =dpNew; p < endptr; i++,p++)
+		*p = dp[i];
 	delete[] dp;
 	dp = nullptr;
 	dp = dpNew; 
@@ -26,6 +28,7 @@ void extend(int**& dp, int& rows) {
 int** get2D(char* filename) {
     int size=1;
     int** arr = new int*[size];
+    int **tempArr = arr;
     int i=0;
     fstream fin(filename,ios::in);
     if (fin.is_open()) {
@@ -60,7 +63,8 @@ int** get2D(char* filename) {
 
 void reduceCol(int ** arr,int j,int row) {
     int size=1;
-    for (int j=0; *(*(arr+row)+j) !=-1; j++) {
+    int **p = arr+row;
+    for (int j=0; *(*(p)+j) !=-1; j++) {
         size++;
     }
     int *ptr = new int[size-1];
