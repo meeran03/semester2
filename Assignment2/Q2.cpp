@@ -58,12 +58,106 @@ int** get2D(char* filename) {
     return arr;
 }
 
+void reduceCol(int ** arr,int j,int row) {
+    int size=1;
+    for (int j=0; *(*(arr+row)+j) !=-1; j++) {
+        size++;
+    }
+    int *ptr = new int[size-1];
+    // Now that size decreased, copy the contents excluding jth term
+    int m=0;
+    int l=0;
+    while (m<size) {
+        if (m != j) {
+            ptr[l] = arr[row][m];
+            l++;
+        }
+        m++;
+    }
+    delete [] arr[row];
+    arr[row] = nullptr;
+    arr[row] = ptr;
+}
+
+bool checkArr(int firstArr, int secondArr, int** arr) {
+
+    bool good = true;
+    int size1=1,size2=1;
+    while (arr[firstArr][size1]!=-1) {
+        size1++;
+    } 
+    while (arr[secondArr][size2]!=-1) {
+        size2++;
+    } 
+    if (size1 != size2) {
+        good = false;
+    }
+    else {
+        for (int i=0;i<size1;i++) {
+            if (arr[firstArr][i] != arr[secondArr][i]) {
+                good = false;
+                break;
+            }
+        }
+    }
+    return good;
+}
+
+void reduceRow(int ** &arr,int row) {
+    int size=0;
+    for (int j=0; *(arr+j); j++) {
+        size++;
+    }
+    int **ptr = new int*[size];
+    // Now that size decreased, copy the contents excluding rowth term
+    int m=0;
+    int l=0;
+    while (m<size+1) {
+        if (m != row) {
+            ptr[l] = arr[m];
+            l++;
+        }
+        m++;
+    }
+    delete [] arr;
+    arr = nullptr;
+    arr = ptr;
+
+}
+
+void RemoveAllRepititions(int**& arr) {
+    // This is the Pass 1
+    int i=0;
+    while (*(arr+i)) {
+        for (int j=0; *(*(arr+i) +j) ;) {
+            if (*(*(arr+i) +j) == *(*(arr+i)+j+1)) {
+                reduceCol(arr,j+1,i);
+            }
+            else {
+                j++;
+            }
+        }
+        i++;
+    }
+    // This is the pass 2
+    int m=0;
+    while (*(arr+m+1)) {
+        if (checkArr(m,m+1,arr)) {
+            reduceRow(arr,m);
+        }
+        else {
+        }
+        m++;
+    }
+}
+
 int main() {
     char* filename = new char[100];
     cout << "Enter the filname : ";
     cin >> filename;
     int** arr = get2D(filename);
     int n=0,i=0;
+    RemoveAllRepititions(arr);
     while (1) {
         n=0;
         while (*(*arr +n) != -1) {
